@@ -1,0 +1,113 @@
+name: Publish to PyPI
+
+# Triggers on a pushed version tag: v0.1.0, v1.2.3, etc.
+# Requires PyPI Trusted Publishing configured at:
+# https://pypi.org/manage/project/polytools/settings/publishing/
+# No API token or secret needed — OIDC handles authentication.
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+[ab][0-9]+"   # alpha/beta: v1.0.0a1, v1.0.0b2
+
+jobs:
+  # ── 1. Run the full test suite before publishing ──────────────────────────
+  test:
+    name: Test before publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      - run: pytest tests/ -v --tb=short
+
+  # ── 2. Build the distribution ─────────────────────────────────────────────
+  build:
+    name: Build distribution
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install hatch
+        run: pip install hatch
+
+      - name: Verify version tag matches pyproject.toml
+        run: |
+          TAG="${GITHUB_REF#refs/tags/v}"
+          PKG=$(python -c "import tomllib; d=tomllib.load(open('pyproject.toml','rb')); print(d['project']['version'])")
+          if [ "$TAG" != "$PKG" ]; then
+            echo "Tag $TAG does not match package version $PKG"
+            exit 1
+          fi
+          echo "Version match confirmed: $TAG"
+
+      - name: Build sdist and wheel
+        run: hatch build
+
+      - name: Upload distribution artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  # ── 3. Publish to PyPI via Trusted Publishing (OIDC) ─────────────────────
+  publish:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/polytools/
+    permissions:
+      id-token: write  # Required for OIDC trusted publishing
+
+    steps:
+      - name: Download distribution artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  # ── 4. Create GitHub Release with changelog excerpt ───────────────────────
+  release:
+    name: Create GitHub Release
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract changelog section for this version
+        id: changelog
+        run: |
+          TAG="${GITHUB_REF#refs/tags/v}"
+          # Extract the block between this version header and the next
+          NOTES=$(awk "/^## \[$TAG\]/{flag=1; next} /^## \[/{flag=0} flag" CHANGELOG.md)
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Download distribution artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: ${{ steps.changelog.outputs.notes }}
+          files: dist/*
