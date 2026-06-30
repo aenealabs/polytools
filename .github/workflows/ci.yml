@@ -35,6 +35,7 @@ jobs:
         run: pytest tests/ -v --tb=short
 
       - name: Verify zero runtime dependencies
+        shell: bash  # heredoc below is bash syntax; Windows defaults to pwsh
         run: |
           # polytools must ship with zero dependencies.
           # This step fails the build if any non-stdlib import is introduced.
