@@ -93,6 +93,10 @@ def _convert_schema(schema: dict) -> dict:
         elif key == "additionalProperties" and isinstance(value, dict):
             result["additionalProperties"] = _convert_schema(value)
 
+        elif key == "required" and isinstance(value, list):
+            # Preserve required lists on nested object schemas.
+            result["required"] = value
+
         elif key in ("description", "format", "minItems", "maxItems",
                      "uniqueItems", "minimum", "maximum"):
             result[key] = value

@@ -237,10 +237,72 @@ result = send_email.call(block.input)
 | `Optional[T]` | `{"anyOf": [{...}, {"type": "null"}]}` |
 | `Union[T1, T2]` | `{"anyOf": [{...}, {...}]}` |
 | `Literal["a", "b"]` | `{"type": "string", "enum": ["a", "b"]}` |
+| `Enum` subclass | `{"type": <value type>, "enum": [...]}` |
+| `dataclass` | `{"type": "object", "properties": {...}, "required": [...]}` |
+| `TypedDict` | `{"type": "object", "properties": {...}, "required": [...]}` |
+| `NamedTuple` | `{"type": "object", "properties": {...}, "required": [...]}` |
 | `Any` | `{}` (no constraints) |
 | Unannotated | `{}` (no constraints) |
 
 Nested types are fully supported: `list[dict[str, Optional[int]]]` works as expected.
+
+## Structured inputs
+
+Parameters typed as a `dataclass`, `TypedDict`, `NamedTuple`, or `Enum` become proper nested JSON Schema objects — no Pydantic required. A field is marked `required` unless it has a default (or is a `total=False` / `NotRequired` TypedDict key).
+
+```python
+from dataclasses import dataclass
+from enum import Enum
+from polytools import tool
+
+class Priority(Enum):
+    LOW = "low"
+    HIGH = "high"
+
+@dataclass
+class Ticket:
+    title: str
+    priority: Priority
+    assignee: str = ""
+
+@tool
+def create_ticket(ticket: Ticket) -> str:
+    """Open a support ticket.
+
+    Args:
+        ticket: The ticket to create.
+    """
+    ...
+
+create_ticket.to_openai()
+```
+
+<details>
+<summary>Schema output (parameters)</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "ticket": {
+      "type": "object",
+      "description": "The ticket to create.",
+      "properties": {
+        "title":    {"type": "string"},
+        "priority": {"type": "string", "enum": ["low", "high"]},
+        "assignee": {"type": "string"}
+      },
+      "required": ["title", "priority"]
+    }
+  },
+  "required": ["ticket"]
+}
+```
+</details>
+
+Nesting is recursive (a dataclass field that is itself a dataclass, `list[SomeDataclass]`, `Optional[SomeTypedDict]`, `dict[str, SomeEnum]`, …). Self-referential types are guarded and collapse to a bare `{"type": "object"}`.
+
+> **Note:** `.call(args)` passes the LLM's argument dict straight to your function; it does **not** reconstruct dataclass/TypedDict instances from that dict. Schema generation and argument coercion are separate concerns — coercion may land in a future release.
 
 ## Docstring Styles
 
