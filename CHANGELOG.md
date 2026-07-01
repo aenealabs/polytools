@@ -7,6 +7,18 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-06-30
+
+### Added
+- **Structured input types** — parameters typed as a `dataclass`, `TypedDict`, `NamedTuple`, or `Enum` now generate proper nested JSON Schema objects (or typed enums), across all four providers. Nesting is recursive and self-referential types are guarded against infinite recursion.
+- New tests covering enums, dataclasses, TypedDicts, NamedTuples, nested combinations, and provider integration
+
+### Fixed
+- Gemini formatter now preserves `required` lists on nested object schemas
+
+### Changed
+- Dropped the author email from package metadata (the GitHub no-reply address was a dead mailto link); author is now name-only
+
 ## [0.1.1] - 2026-06-30
 
 ### Added
@@ -37,6 +49,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Zero external dependencies — pure Python stdlib (3.9+)
 - 91 unit tests covering schema generation, docstring parsing, and all four providers
 
-[Unreleased]: https://github.com/aenealabs/polytools/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/aenealabs/polytools/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/aenealabs/polytools/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/aenealabs/polytools/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/aenealabs/polytools/releases/tag/v0.1.0

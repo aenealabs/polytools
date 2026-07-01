@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "polytools"
-version = "0.1.1"
+version = "0.2.0"
 description = "Cross-provider LLM tool schema generation from Python type hints. Zero dependencies."
 readme = "README.md"
 requires-python = ">=3.9"
