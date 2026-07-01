@@ -4,13 +4,13 @@ build-backend = "hatchling.build"
 
 [project]
 name = "polytools"
-version = "0.1.0"
+version = "0.1.1"
 description = "Cross-provider LLM tool schema generation from Python type hints. Zero dependencies."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [
-    { name = "LaVon Rutledge", email = "lavonrutledge2@gmail.com" }
+    { name = "LaVon Rutledge", email = "32437530+lavrut@users.noreply.github.com" }
 ]
 keywords = [
     "llm", "ai-agents", "tool-calling", "function-calling",
@@ -29,6 +29,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Typing :: Typed",
 ]
 dependencies = []  # Zero external dependencies — pure Python stdlib only
 
@@ -36,9 +37,10 @@ dependencies = []  # Zero external dependencies — pure Python stdlib only
 dev = ["pytest", "hatch"]
 
 [project.urls]
-Homepage = "https://github.com/lavonrutledge/polytools"
-Repository = "https://github.com/lavonrutledge/polytools"
-Issues = "https://github.com/lavonrutledge/polytools/issues"
+Homepage = "https://github.com/aenealabs/polytools"
+Repository = "https://github.com/aenealabs/polytools"
+Issues = "https://github.com/aenealabs/polytools/issues"
+Changelog = "https://github.com/aenealabs/polytools/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/polytools"]

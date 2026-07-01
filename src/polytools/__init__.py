@@ -50,7 +50,13 @@ Google, NumPy, and reStructuredText docstrings are all auto-detected and
 parsed to extract per-parameter descriptions.
 """
 
+from importlib.metadata import PackageNotFoundError, version as _version
+
 from ._decorator import Tool, tool
 
 __all__ = ["tool", "Tool"]
-__version__ = "0.1.0"
+
+try:
+    __version__ = _version("polytools")
+except PackageNotFoundError:  # running from a source tree without install metadata
+    __version__ = "0.0.0"

@@ -13,7 +13,7 @@ We support only the most recent released version. Please upgrade before reportin
 
 **Do not open a public GitHub issue for security vulnerabilities.**
 
-Please report security issues by emailing **lavonrutledge2@gmail.com** with the subject line `[polytools] Security Vulnerability`.
+Please report security issues privately through GitHub's [private vulnerability reporting](https://github.com/aenealabs/polytools/security/advisories/new): go to the repository's **Security** tab and click **Report a vulnerability**. This keeps the report confidential until a fix is released.
 
 Include:
 - A description of the vulnerability and its potential impact

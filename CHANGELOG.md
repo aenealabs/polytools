@@ -7,6 +7,20 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-06-30
+
+### Added
+- `py.typed` marker (PEP 561) so downstream type checkers use polytools' inline type hints
+- `Typing :: Typed` trove classifier
+- `Changelog` project URL
+
+### Fixed
+- Corrected `Homepage`, `Repository`, and `Issues` project URLs to point at `aenealabs/polytools`
+- `polytools.__version__` now derives from installed package metadata instead of a hardcoded string, so it always matches the released version
+
+### Changed
+- Security vulnerability reports now go through GitHub private vulnerability reporting instead of email
+
 ## [0.1.0] - 2026-06-30
 
 ### Added
@@ -23,5 +37,6 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Zero external dependencies — pure Python stdlib (3.9+)
 - 91 unit tests covering schema generation, docstring parsing, and all four providers
 
-[Unreleased]: https://github.com/aenealabs/polytools/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/aenealabs/polytools/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/aenealabs/polytools/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/aenealabs/polytools/releases/tag/v0.1.0
