@@ -115,7 +115,7 @@ import anthropic
 
 client = anthropic.Anthropic()
 response = client.messages.create(
-    model="claude-sonnet-4-6",
+    model="claude-sonnet-5",
     messages=[{"role": "user", "content": "Send an email to alice@example.com"}],
     tools=[send_email.to_anthropic()],
 )
