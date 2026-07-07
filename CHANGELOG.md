@@ -7,6 +7,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-07-07
+
+### Fixed
+- Corrected an invalid Anthropic model id in the README usage example (`claude-sonnet-4-6` → `claude-sonnet-5`), so the PyPI project page renders a working snippet
+
 ## [0.2.0] - 2026-06-30
 
 ### Added
